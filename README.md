@@ -15,30 +15,6 @@
 cd ~
 cd ws
 mkdir -p cpp-koans
-cd cpp-koans
-mkdir src
-mkdir include
-mkdir tests
-mkdir build
-touch ./CMakeLists.txt
-touch ./tests/CMakeLists.txt
-touch ./tests/level0_empty.cpp
-```
-
-### CMakeLists.txt (Project Structure)
-
-```bash
-cat > CMakeLists.txt << EOF
-cmake_minimum_required(VERSION 3.16)
-project(cpp-koans LANGUAGES CXX)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-include(CTest)
-
-add_subdirectory(tests)
-EOF
 ```
 
 ### tests/CMakeLists.txt (GoogleTest and Unit Tests)
@@ -66,14 +42,37 @@ add_test(NAME Koans COMMAND koans)
 EOF
 ```
 
-### tests/level0_empty.cpp
+### tests/level1_variables.cpp
 
 ```bash
 cat > ./tests/level0_empty.cpp << EOF
-#include <gtest/gtest.h>
+#include <gtest/gtest.h>#include <gtest/gtest.h>
+#include <string>
 
-// Nothing here yet! 
-// Progress to level-1!
+TEST(Variables, Integers) {
+    int x = 5;
+    EXPECT_EQ(x, 10); // ❌ Fix: make this test pass
+}
+
+TEST(Variables, FloatingPoints) {
+    double y = 3.14;
+    EXPECT_NEAR(y, 6.28, 0.01); // ❌ Fix: make this test pass
+}
+
+TEST(Variables, Strings) {
+    std::string s = "Hello";
+    EXPECT_EQ(s, "Goodbye"); // ❌ Fix: make this test pass
+}
+
+TEST(Variables, Arithmetic) {
+    int result = (2 + 2) * 2;
+    EXPECT_EQ(result, 10); // ❌ Fix: make this test pass
+}
+
+TEST(Variables, BooleanLogic) {
+    bool b = (5 > 10);
+    EXPECT_TRUE(b); // ❌ Fix: make this test pass
+}
 EOF
 ```
 
@@ -85,15 +84,7 @@ make -C build
 make -C build test
 ```
 
-### Reset to commit or delete zero-project
-
-#### Delete Project
-
-```bash
-cd ~
-cd ws
-rm -rf cpp-koans
-```
+### Reset to commit
 
 #### Reset to Commit
 
