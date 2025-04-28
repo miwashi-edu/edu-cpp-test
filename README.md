@@ -9,12 +9,12 @@
 
 ## Instructions
 
-### Scaffold Project
+### Prepare
 
 ```bash
 cd ~
 cd ws
-mkdir -p cpp-koans
+cd cpp-koans
 ```
 
 ### tests/CMakeLists.txt (GoogleTest and Unit Tests)
