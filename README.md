@@ -32,46 +32,65 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(koans
-    level0_empty.cpp
-)
+add_executable(koans1 level0_empty.cpp)
+add_executable(koans2 level2_controlflow.cpp)
 
-target_link_libraries(koans gtest_main)
+target_link_libraries(koans1 gtest_main)
+target_link_libraries(koans2 gtest_main)
 
-add_test(NAME Koans COMMAND koans)
+add_test(NAME Koans1 COMMAND koans1)
+add_test(NAME Koans2 COMMAND koans2)
 EOF
 ```
 
-### tests/level1_variables.cpp
+### tests/level2_controlflow.cpp
 
 ```bash
-cat > ./tests/level0_empty.cpp << EOF
-#include <gtest/gtest.h>#include <gtest/gtest.h>
+cat > ./tests/level2_controlflow.cpp << EOF
+#include <gtest/gtest.h>
 #include <string>
 
-TEST(Variables, Integers) {
+TEST(ControlFlow, IfElse) {
+    int a = 5;
+    std::string result;
+    if (a > 10) {
+        result = "greater";
+    } else {
+        result = "smaller";  // fix
+    }
+    EXPECT_EQ(result, "greater");
+}
+
+TEST(ControlFlow, ForLoopSum) {
+    int sum = 0;
+    for (int i = 0; i < 3; ++i) {
+        sum += i;
+    }
+    EXPECT_EQ(sum, 6); // fix
+}
+
+TEST(ControlFlow, WhileLoopCountDown) {
+    int n = 5;
+    int counter = 0;
+    while (n > 0) {
+        n--; 
+        counter++;
+    }
+    EXPECT_EQ(counter, 3); // fix
+}
+
+TEST(ControlFlow, NestedIf) {
     int x = 5;
-    EXPECT_EQ(x, 10); // ❌ Fix: make this test pass
-}
-
-TEST(Variables, FloatingPoints) {
-    double y = 3.14;
-    EXPECT_NEAR(y, 6.28, 0.01); // ❌ Fix: make this test pass
-}
-
-TEST(Variables, Strings) {
-    std::string s = "Hello";
-    EXPECT_EQ(s, "Goodbye"); // ❌ Fix: make this test pass
-}
-
-TEST(Variables, Arithmetic) {
-    int result = (2 + 2) * 2;
-    EXPECT_EQ(result, 10); // ❌ Fix: make this test pass
-}
-
-TEST(Variables, BooleanLogic) {
-    bool b = (5 > 10);
-    EXPECT_TRUE(b); // ❌ Fix: make this test pass
+    int y = 10;
+    std::string res;
+    if (x < y) {
+        if (y > 20) {
+            res = "big";
+        } else {
+            res = "small";
+        }
+    }
+    EXPECT_EQ(res, "big"); // fix
 }
 EOF
 ```
