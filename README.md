@@ -58,48 +58,62 @@ cat > ./tests/level3_parameters.cpp << EOF
 #include <gtest/gtest.h>
 #include <string>
 
-// Pass by value: copies
+// Pass by value: copies (mutation does NOT affect original)
 void modifyByValue(int x) {
     x += 10;
 }
 
-// Pass by reference: modifies caller
+// Pass by reference: modifies caller (mutation DOES affect original)
 void modifyByReference(int& x) {
     x += 10;
 }
 
-// Pass by const reference: cannot modify
-int readByConstReference(const int& x) {
+// Pass by const reference: cannot modify caller
+int readAndTryModifyByConstReference(const int& x) {
+    // x++;  // illegal: would not compile if uncommented
     return x + 5;
 }
 
-// Modify string by reference
+// Modify string by reference (mutation DOES affect original)
 void appendExclamation(std::string& s) {
     s += "!";
 }
 
-TEST(Parameters, ModifyByValue) {
+// Try to modify string passed by const reference (should not modify)
+std::string copyAndAppend(const std::string& s) {
+    return s + "!";
+}
+
+TEST(Parameters, ModifyByValue_ShouldNotChangeOriginal) {
     int a = 5;
     modifyByValue(a);
-    EXPECT_EQ(a, 15); // ❌ Fix: should pass
+    EXPECT_EQ(a, 15); // ❌ Fix: a did not change, still 5
 }
 
-TEST(Parameters, ModifyByReference) {
+TEST(Parameters, ModifyByReference_ShouldChangeOriginal) {
     int a = 5;
     modifyByReference(a);
-    EXPECT_EQ(a, 5); // ❌ Fix: should pass
+    EXPECT_EQ(a, 5); // ❌ Fix: a actually became 15
 }
 
-TEST(Parameters, ReadByConstReference) {
+TEST(Parameters, ReadConstReference_ShouldNotChangeOriginal) {
     int a = 10;
-    int result = readByConstReference(a);
-    EXPECT_EQ(result, 10); // ❌ Fix: should pass
+    int result = readAndTryModifyByConstReference(a);
+    EXPECT_EQ(a, 5); // ❌ Fix: a remains 10
+    EXPECT_EQ(result, 10); // ❌ Fix: result is 15
 }
 
-TEST(Parameters, ModifyStringByReference) {
+TEST(Parameters, ModifyStringByReference_ShouldChangeOriginal) {
     std::string s = "Hello";
     appendExclamation(s);
-    EXPECT_EQ(s, "Hello"); // ❌ Fix: should pass
+    EXPECT_EQ(s, "Hello"); // ❌ Fix: s actually became "Hello!"
+}
+
+TEST(Parameters, CopyStringByConstReference_ShouldNotChangeOriginal) {
+    std::string s = "Hi";
+    std::string newString = copyAndAppend(s);
+    EXPECT_EQ(s, "Hi!"); // ❌ Fix: s remains "Hi"
+    EXPECT_EQ(newString, "Hi"); // ❌ Fix: newString is "Hi!"
 }
 EOF
 ```
