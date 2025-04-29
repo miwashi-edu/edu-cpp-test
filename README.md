@@ -16,29 +16,7 @@ cd ~
 cd ws
 mkdir -p cpp-koans
 cd cpp-koans
-mkdir src
-mkdir include
-mkdir tests
-mkdir build
-touch ./CMakeLists.txt
-touch ./tests/CMakeLists.txt
-touch ./tests/level0_empty.cpp
-```
-
-### CMakeLists.txt (Project Structure)
-
-```bash
-cat > CMakeLists.txt << EOF
-cmake_minimum_required(VERSION 3.16)
-project(cpp-koans LANGUAGES CXX)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-include(CTest)
-
-add_subdirectory(tests)
-EOF
+touch ./tests/level3_parameters.cpp
 ```
 
 ### tests/CMakeLists.txt (GoogleTest and Unit Tests)
@@ -56,24 +34,73 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(koans
-    level0_empty.cpp
-)
+add_executable(koans0 level0_empty.cpp)
+add_executable(koans1 level1_variables.cpp)
+add_executable(koans2 level2_controlflow.cpp)
+add_executable(koans3 level3_parameters.cpp)
 
-target_link_libraries(koans gtest_main)
+target_link_libraries(koans0 gtest_main)
+target_link_libraries(koans1 gtest_main)
+target_link_libraries(koans2 gtest_main)
+target_link_libraries(koans3 gtest_main)
 
-add_test(NAME Koans COMMAND koans)
+add_test(NAME Koans0 COMMAND koans0)
+add_test(NAME Koans1 COMMAND koans1)
+add_test(NAME Koans2 COMMAND koans2)
+add_test(NAME Koans3 COMMAND koans3)
 EOF
 ```
 
 ### tests/level0_empty.cpp
 
 ```bash
-cat > ./tests/level0_empty.cpp << EOF
+cat > ./tests/level3_parameters.cpp << EOF
 #include <gtest/gtest.h>
+#include <string>
 
-// Nothing here yet! 
-// Progress to level-1!
+// Pass by value: copies
+void modifyByValue(int x) {
+    x += 10;
+}
+
+// Pass by reference: modifies caller
+void modifyByReference(int& x) {
+    x += 10;
+}
+
+// Pass by const reference: cannot modify
+int readByConstReference(const int& x) {
+    return x + 5;
+}
+
+// Modify string by reference
+void appendExclamation(std::string& s) {
+    s += "!";
+}
+
+TEST(Parameters, ModifyByValue) {
+    int a = 5;
+    modifyByValue(a);
+    EXPECT_EQ(a, 15); // ❌ Fix: should pass
+}
+
+TEST(Parameters, ModifyByReference) {
+    int a = 5;
+    modifyByReference(a);
+    EXPECT_EQ(a, 5); // ❌ Fix: should pass
+}
+
+TEST(Parameters, ReadByConstReference) {
+    int a = 10;
+    int result = readByConstReference(a);
+    EXPECT_EQ(result, 10); // ❌ Fix: should pass
+}
+
+TEST(Parameters, ModifyStringByReference) {
+    std::string s = "Hello";
+    appendExclamation(s);
+    EXPECT_EQ(s, "Hello"); // ❌ Fix: should pass
+}
 EOF
 ```
 
